@@ -24,8 +24,10 @@ public:
 		}
 	}
 
-	//  деструктор - но не вижу смысла чистить - потому убрал. Закомментил на случай, если препод запросит
-	// ~Student(){};
+	//  деструктор  - зачищаем динамические ресурсы
+	~Student(){
+		delete cardio;
+	};
 
 	void oculist_checkup(string diagnosis_in)
 	{
@@ -45,30 +47,7 @@ public:
 	}
 	void cardio_checkup(int hight = 20, int width = 200, int max_step = 3)
 	{
-		int curr_i = (int)hight / 2;
-		int curr_dir = 1;
-		int curr_step = rand() % max_step + 1;
-		int next_i;
-		int j = 0;
-		cardio.clear();
-		cardio.assign(hight * width + hight, '-');
-		for (int i = 0; i < hight; i++)
-		{
-			cardio[i * (width + 1) + width] = '\n';
-		}
-		while (j < width)
-		{
-			next_i = curr_i + curr_dir * curr_step;
-			if (next_i >= hight || next_i < 0)
-			{
-				curr_dir *= -1;
-				curr_step = rand() % max_step + 1;
-				continue;
-			}
-			cardio[next_i * (width + 1) + j] = '*';
-			curr_i = next_i;
-			j++;
-		}
+		// in this method we can change cardio
 	}
 	string get_all_info()
 	{
@@ -80,7 +59,6 @@ public:
 		info += " - Диагноз невролога: \n" + neurologist_diagnosis + "\n";
 		info += " - Диагноз хирурга: \n" + surgeon_diagnosis + "\n";
 		info += " - Диагноз терапевта: \n" + therapist_diagnosis + "\n";
-		info += " - Кадиограмма: \n" + cardio + "\n";
 		return info;
 	}
 
@@ -94,7 +72,9 @@ private:
 	string surgeon_diagnosis;
 	string therapist_diagnosis;
 
-	string cardio;
+	int *cardio = new int; // пусть кардиограмма это как график через  промежутки времени. т.е. набор чисел
+						   // Операция new создает объект заданного типа, выделяет ему память и возвращает указатель правильного типа на данный участок памяти. - другими словами, нам это еще потом очищать
+
 
 	int check_init()
 	{
@@ -166,11 +146,9 @@ int main()
 	ofstream fout("Official report.txt"); 
 	fout << report1.report;
 	fout.close();
-	/* тут  сказано  https://web-answers.ru/c/ispolzovanie-malloc-realloc-dlja-massiva-klassov.html, что надо деструктором пройтись. если рии надо, то сделай это так
-	но наш диструктор нифига не делает - значит и не надо
+	// тут  сказано  https://web-answers.ru/c/ispolzovanie-malloc-realloc-dlja-massiva-klassov.html, что надо деструктором пройтись
 	for (int i = 0; i < N; i++)
 		StudentGroup[i].~Student();
-	*/
 	free(StudentGroup);
 
 	return 0;
