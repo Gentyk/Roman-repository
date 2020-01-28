@@ -25,7 +25,7 @@ public:
 	}
 
 	//  деструктор  - зачищаем динамические ресурсы
-	~Student(){
+	~Student() {
 		delete cardio;
 	};
 
@@ -107,7 +107,7 @@ public:
 int main()
 {
 	// введем имя группы
-	string group_name, first_name, second_name;
+	string group_name, first_name, second_name, verdict;
 	cout << "Group name:" << endl;
 	cin >> group_name;
 
@@ -117,7 +117,7 @@ int main()
 	cin >> N;
 	// особенности с работом маллока для классов написаны здесь https://web-answers.ru/c/ispolzovanie-malloc-realloc-dlja-massiva-klassov.html
 	// резервирует память для хранения инфы о студенах, но не инициализирует память - требуется конструктов
-	Student *StudentGroup = (Student*)malloc(N*sizeof(Student));
+	Student *StudentGroup = (Student*)malloc(N * sizeof(Student));
 	if (StudentGroup == NULL) exit(1);
 
 	// заполняем
@@ -129,12 +129,19 @@ int main()
 		cin >> second_name;
 		cout << endl;
 		new (StudentGroup + i) Student(first_name, second_name, group_name); // а вот и конструктор
-		
-		// далее -то, что поставили врачи, но влом заполнять. так или иначе, можно переделать на cin, но поступим методом военкомата)))
-		StudentGroup[i].oculist_checkup("good");
-		StudentGroup[i].neurologist_checkup("good");
-		StudentGroup[i].surgeon_checkup("good");
-		StudentGroup[i].therapist_checkup("good");
+																			 // далее -то, что поставили врачи, но влом заполнять. так или иначе, можно переделать на cin, но поступим методом военкомата)))
+		cout << "A verdict of the oculist: " << endl;
+		cin >> verdict;
+		StudentGroup[i].oculist_checkup(verdict);
+		cout << "A verdict of the neurologist: " << endl;
+		cin >> verdict;
+		StudentGroup[i].neurologist_checkup(verdict);
+		cout << "A verdict of the surgeon: " << endl;
+		cin >> verdict;
+		StudentGroup[i].surgeon_checkup(verdict);
+		cout << "A verdict of the therapist: " << endl;
+		cin >> verdict;
+		StudentGroup[i].therapist_checkup(verdict);
 	}
 
 	// теперь формируем отчет и юзаем перегруженный плюсик
@@ -143,7 +150,7 @@ int main()
 		report1 = report1 + StudentGroup[i].get_all_info();
 	}
 
-	ofstream fout("Official report.txt"); 
+	ofstream fout("Official report.txt");
 	fout << report1.report;
 	fout.close();
 	// тут  сказано  https://web-answers.ru/c/ispolzovanie-malloc-realloc-dlja-massiva-klassov.html, что надо деструктором пройтись
