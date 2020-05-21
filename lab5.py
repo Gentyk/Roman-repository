@@ -1,5 +1,5 @@
 import math
-
+import random
 import cv2
 import pandas
 
@@ -63,8 +63,8 @@ def cut_coin(image, grad = 50):
             diam = d(blue_coordinates[i][0], blue_coordinates[i][1], blue_coordinates[j][0], blue_coordinates[j][1])
             if diam > mdl:
                 mdl = diam
-    # cv2.imshow(f'{s[1]}_2.png', thresh)
-    # cv2.imshow(f'{s[1]}.png', new_image)
+    cv2.imshow(f'{random.randint(100, 10000)}.png', thresh)
+    cv2.imshow(f'{random.randint(100, 1000)}.png', new_image)
     return new_image, S, perimeter, mdl, rmax, rmin
 
 
@@ -98,6 +98,8 @@ def create_matrix(image):
                 for y_step in steps:
                     current_y = y + y_step
                     if current_y < 0 or current_y == max_y or current_x==x and current_y==y:
+                        continue
+                    if brightness[current_x][current_y] == -1:
                         continue
                     matrix[brightness[x][y]][brightness[current_x][current_y]] +=1
                     sum_ += 1
@@ -139,7 +141,6 @@ def get_features(coin, S,perimeter,mdl, rmax, rmin) -> dict:
 
     # тукстуры
     matrix = create_matrix(start_pixels)
-    len_x, len_y = len(start_pixels), len(start_pixels[0])
     features["ENERGY"] = 0
     features["CON"] = 0
     features["MRP"] = 0
@@ -175,6 +176,8 @@ def image_features(image_path):
     n= 0
     for j in start_pixels:
         for i in j:
+            if i == [0,0,0]:
+                continue
             sum_ += sum(i)/3
             n+=1
     print(sum_/n)
